@@ -37,10 +37,15 @@
     "debowerify": "^0.7.1",
     "mocha": "^1.19.0",
     "should": "^3.3.1",
-    "jshint-stylish": "^0.2.0"
+    "jshint-stylish": "^0.2.0",
+    "reactify": "~0.14.0"
   },
   "dependencies": {
+    "backbone": "~1.1.2",
     "jquery": "^2.1.1",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "react": "~0.11.1",
+    "underscore": "~1.7.0",
+    "fluxxor": "~1.4.0"
   }
 }
