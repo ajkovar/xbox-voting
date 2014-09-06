@@ -22,8 +22,13 @@ module.exports = React.createClass({
     return flux.store("GameStore").getState();
   },
 
+  componentDidMount: function() {
+    this.getFlux().actions.loadGames();
+  },
+
   render: function() {
-    return (
+    return this.state.loading ? 
+      <span>loading..</span> : 
       <div>
         <ul>
           {this.state.games.map(function(game, i) {
@@ -38,7 +43,6 @@ module.exports = React.createClass({
         </form>
         <button onClick={this.clearCompletedGames}>Clear Completed</button>
       </div>
-    );
   },
 
   handleGameTextChange: function(e) {
