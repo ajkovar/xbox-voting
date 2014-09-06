@@ -1,6 +1,7 @@
 'use strict';
 
 var browserify = require('browserify');
+var reactify = require('reactify');
 var config = require('../config');
 var partialify = require('partialify');
 var gulp = require('gulp');
@@ -31,6 +32,7 @@ gulp.task('browserify', function() {
   return browserify('./app/scripts/main.js')
     .external(libs)
     .transform(partialify) // Transform to allow requireing of templates
+    .transform(reactify)
     .bundle({debug: true})
     .pipe(source('main.js'))
     .pipe(gulp.dest(config.dist + '/scripts/'));
