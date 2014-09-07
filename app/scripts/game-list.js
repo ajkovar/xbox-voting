@@ -14,8 +14,9 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return { 
-      newGameText: "",
-      status: this.props.status || "wantit"
+      newGameLabel: "",
+      status: this.props.status || "wantit",
+      nameDuplicated: false
     };
   },
 
@@ -34,13 +35,14 @@ module.exports = React.createClass({
   render: function() {
     var self = this;
     return this.state.loading ? 
-      <span>loading..</span> : 
+      <span>Loading..</span> : 
       <div>
         <table className="table table-bordered">
           <tr>
             <th>Title</th>
             <th>Votes</th>
           </tr>
+          <tbody>
           {
             this.state.games.filter(function(game){
               return game.status===self.state.status
@@ -48,13 +50,17 @@ module.exports = React.createClass({
               return <GameItem game={game} key={i} />;
             })
           }
+          </tbody>
         </table>
         <form onSubmit={this.onSubmitForm}>
-          <div className="form-group">
+          <div className={"form-group"+(this.state.nameDuplicated ? " has-error" : "")}>
             <input type="text" size="30" placeholder="New Game"
-                   value={this.state.newGameText}
+                   value={this.state.newGameLabel}
                    onChange={this.handleGameTextChange}
                    className="form-control" />
+            { this.state.nameDuplicated ? 
+                <span className="text-danger">Duplicate Name</span> : 
+                "" }
           </div>
           <input type="submit" value="Add Game" className="btn btn-primary"/>
         </form>
@@ -62,14 +68,19 @@ module.exports = React.createClass({
   },
 
   handleGameTextChange: function(e) {
-    this.setState({newGameText: e.target.value});
+    this.setState({
+      newGameLabel: e.target.value,
+      nameDuplicated: this.state.games.some(function(game){
+        return (game.title || "").trim().toLowerCase()===e.target.value.trim().toLowerCase()
+      })
+    });
   },
 
   onSubmitForm: function(e) {
     e.preventDefault();
-    if (this.state.newGameText.trim()) {
-      this.getFlux().actions.addGame(this.state.newGameText, this.state.status);
-      this.setState({newGameText: ""});
+    if (this.state.newGameLabel.trim() && !this.state.nameDuplicated) {
+      this.getFlux().actions.addGame(this.state.newGameLabel, this.state.status);
+      this.setState({newGameLabel: ""});
     }
   }
 });
