@@ -46,6 +46,7 @@
     "lodash": "^2.4.1",
     "react": "~0.11.1",
     "underscore": "~1.7.0",
-    "fluxxor": "~1.4.0"
+    "fluxxor": "~1.4.0",
+    "react-router": "~0.7.0"
   }
 }

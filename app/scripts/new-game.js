@@ -5,13 +5,13 @@
 var Fluxxor = require("fluxxor");
 var React = require("react");
 
-var FluxMixin = Fluxxor.FluxMixin(React);
+var FluxChildMixin = Fluxxor.FluxChildMixin(React);
+var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 module.exports = React.createClass({
-  mixins: [FluxMixin],
+  mixins: [FluxChildMixin],
 
   render: function() {
-    return <div><this.props.activeRouteHandler/></div>
-    
+    return <div>New Game</div>
   }
 });

@@ -10,6 +10,19 @@
 var App = require('./app.js');
 var React = require("react");
 var flux = require('./flux.js');
+var ReactRouter = require("react-router");
+var Routes = ReactRouter.Routes;
+var Route = ReactRouter.Route;
+var DefaultRoute = ReactRouter.DefaultRoute;
+var GameList = require("./game-list")
+var NewGame = require("./new-game")
 
-var app = new App();
-React.renderComponent(<App flux={flux} />, document.body);
+React.renderComponent((
+  <Routes location="hash">
+    <Route path="/" handler={App} flux={flux}>
+      <DefaultRoute handler={GameList} />
+      <Route name="list" handler={GameList} />
+      <Route name="new" handler={NewGame} />
+    </Route>
+  </Routes>
+), document.body);
