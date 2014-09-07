@@ -36,22 +36,28 @@ module.exports = React.createClass({
     return this.state.loading ? 
       <span>loading..</span> : 
       <div>
-        <ul>
+        <table className="table table-bordered">
+          <tr>
+            <th>Title</th>
+            <th>Votes</th>
+          </tr>
           {
             this.state.games.filter(function(game){
               return game.status===self.state.status
             }).map(function(game, i) {
-              return <li key={i}><GameItem game={game} /></li>;
+              return <GameItem game={game} key={i} />;
             })
           }
-        </ul>
+        </table>
         <form onSubmit={this.onSubmitForm}>
-          <input type="text" size="30" placeholder="New Game"
-                 value={this.state.newGameText}
-                 onChange={this.handleGameTextChange} />
-          <input type="submit" value="Add Game" />
+          <div className="form-group">
+            <input type="text" size="30" placeholder="New Game"
+                   value={this.state.newGameText}
+                   onChange={this.handleGameTextChange}
+                   className="form-control" />
+          </div>
+          <input type="submit" value="Add Game" className="btn btn-primary"/>
         </form>
-        <button onClick={this.clearCompletedGames}>Clear Completed</button>
       </div>
   },
 

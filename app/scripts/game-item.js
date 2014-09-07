@@ -11,10 +11,11 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var style = {
-      textDecoration: this.props.game.complete ? "line-through" : ""
-    };
-
-    return <span style={style} onClick={this.onClick}>{this.props.game.title}</span>;
+    return (
+      <tr>
+        <td>{this.props.game.title}</td>
+        <td>{this.props.game.votes}</td>
+      </tr>
+    );
   }
 });
