@@ -13,26 +13,37 @@ module.exports = React.createClass({
   mixins: [FluxChildMixin, StoreWatchMixin("GameStore")],
 
   getInitialState: function() {
-    return { newGameText: "" };
+    return { 
+      newGameText: "",
+      status: this.props.status || "wantit"
+    };
   },
 
   getStateFromFlux: function() {
-    var flux = this.getFlux();
-    return flux.store("GameStore").getState();
+    return this.getFlux().store("GameStore").getState();
   },
 
   componentDidMount: function() {
     this.getFlux().actions.loadGames();
   },
+  
+  componentWillReceiveProps: function(){
+    this.setState(this.getInitialState());
+  },
 
   render: function() {
+    var self = this;
     return this.state.loading ? 
       <span>loading..</span> : 
       <div>
         <ul>
-          {this.state.games.map(function(game, i) {
-            return <li key={i}><GameItem game={game} /></li>;
-          })}
+          {
+            this.state.games.filter(function(game){
+              return game.status===self.state.status
+            }).map(function(game, i) {
+              return <li key={i}><GameItem game={game} /></li>;
+            })
+          }
         </ul>
         <form onSubmit={this.onSubmitForm}>
           <input type="text" size="30" placeholder="New Game"
@@ -51,7 +62,7 @@ module.exports = React.createClass({
   onSubmitForm: function(e) {
     e.preventDefault();
     if (this.state.newGameText.trim()) {
-      this.getFlux().actions.addGame(this.state.newGameText);
+      this.getFlux().actions.addGame(this.state.newGameText, this.state.status);
       this.setState({newGameText: ""});
     }
   }

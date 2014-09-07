@@ -42,9 +42,10 @@ GameStore.actions = {
     var self = this;
     this.dispatch("loadGames")
     setTimeout(function(){
-      var games = [{
-          title: "Lee Carvallo's Putting Challenge", status: "wantit", votes: 50
-      }];
+      var games = [
+          {title: "Lee Carvallo's Putting Challenge", status: "wantit", votes: 50},
+          {title: "Bonestorm", status: "gotit", votes: 50}
+      ];
       self.dispatch("loadGamesSuccess", {games: games});
     }, 800)
   }
