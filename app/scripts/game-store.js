@@ -10,8 +10,18 @@ var GameStore = require('fluxxor').createStore({
       "loadGames", this.onLoadGames,
       "loadGamesSuccess", this.onLoadGamesSuccess,
       "voteForGame", this.onVoteForGame,
-      "error", this.onError
+      "error", this.onError,
+      "markAsOwned", this.onMarkAsOwned
     );
+  },
+    
+  onMarkAsOwned: function(payload){
+    this.games.forEach(function(game){
+      if(game.id===payload.game.id){
+        game.status="gotit"
+      }
+    });
+    this.emit("change");
   },
     
   onError: function(payload){
@@ -24,7 +34,7 @@ var GameStore = require('fluxxor').createStore({
       if(game.id===payload.game.id){
         game.votes++;
       }
-    }) 
+    });
     this.emit("change");
   },
 
@@ -77,6 +87,18 @@ var checkAccess = function(){
 };
 
 GameStore.actions = {
+  markAsOwned: function(game){
+    var self = this;
+    self.dispatch("markAsOwned", {game: game})
+    $.ajax({
+      dataType: "jsonp",
+      url: constants.url+"setGotIt",
+      data: {
+        apikey: constants.key,
+        id: game.id
+      }
+    });
+  },
   voteForGame: function(game){
     var self = this;
     checkAccess().then(function(){

@@ -41,7 +41,8 @@ module.exports = React.createClass({
           <tr>
             <th>Title</th>
             <th>Votes</th>
-            <th></th>
+            { this.state.status==="wantit" ? <th></th> : "" }
+            { this.state.status==="wantit" ? <th></th> : "" }
           </tr>
           <tbody>
           {
