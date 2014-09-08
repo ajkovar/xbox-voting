@@ -9,8 +9,14 @@ var GameStore = require('fluxxor').createStore({
       "addGame", this.onAddGame,
       "loadGames", this.onLoadGames,
       "loadGamesSuccess", this.onLoadGamesSuccess,
-      "voteForGame", this.onVoteForGame
+      "voteForGame", this.onVoteForGame,
+      "error", this.onError
     );
+  },
+    
+  onError: function(payload){
+    this.error = payload.message 
+    this.emit("change");
   },
     
   onVoteForGame: function(payload){
@@ -42,45 +48,80 @@ var GameStore = require('fluxxor').createStore({
   getState: function() {
     return {
       games: this.games,
-      loading: this.loading
+      loading: this.loading,
+      error: this.error
     };
   }
 });
 
+var checkAccess = function(){
+  var deffered = $.Deferred();
+
+  var lastAction = localStorage["lastAction"] ? 
+          new Date(parseInt(localStorage["lastAction"])) :
+          undefined;
+
+  var now = new Date();
+  var lastActionWasToday = lastAction &&
+          lastAction.getMonth()===now.getMonth() && 
+          lastAction.getDay()===now.getDay() &&
+          lastAction.getYear()===now.getYear();
+  if(lastActionWasToday){
+    deffered.reject("Can't vote or add a game more than once per day.");
+  }
+  else if(now.getDay()===0 || now.getDay()===6){
+    deffered.reject("Can't vote or add a game on weekends.");
+  }
+  deffered.resolve();
+  return deffered;
+};
+
 GameStore.actions = {
   voteForGame: function(game){
-    this.dispatch("voteForGame", {game: game})
-    $.ajax({
-      dataType: "jsonp",
-      url: constants.url+"addVote",
-      data: {
-        apikey: constants.key,
-        id: game.id
-      }
-    });
+    var self = this;
+    checkAccess().then(function(){
+      self.dispatch("voteForGame", {game: game})
+      $.ajax({
+        dataType: "jsonp",
+        url: constants.url+"addVote",
+        data: {
+          apikey: constants.key,
+          id: game.id
+        }, success: function(){
+          localStorage["lastAction"] = new Date().getTime()
+        }
+      });
+    }, function(reason){
+      self.dispatch("error", {message: reason})
+    })
   },
   addGame: function(title) {
     var self = this;
-    var game = {
-      title: title, 
-      status: "wantit",
-      saving: true,
-      votes: 1
-    };
-    $.ajax({
-      dataType: "jsonp",
-      url: constants.url+"addGame",
-      data: {
-        apikey: constants.key,
-        title: game.title
-      },
-      success: function(games){
-        // its ugly.. but just hard reload the list in order to get data back about
-        // the newly created resource
-        self.flux.actions.loadGames()
-      }
-    });
-    this.dispatch("addGame", {game: game});
+    checkAccess().then(function(){
+      var game = {
+        title: title, 
+        status: "wantit",
+        saving: true,
+        votes: 1
+      };
+      this.dispatch("addGame", {game: game});
+      $.ajax({
+        dataType: "jsonp",
+        url: constants.url+"addGame",
+        data: {
+          apikey: constants.key,
+          title: game.title
+        },
+        success: function(games){
+          localStorage["lastAction"] = new Date().getTime()
+          // its ugly.. but just hard reload the list in order to get data back about
+          // the newly created resource
+          self.flux.actions.loadGames()
+        }
+      });
+    }, function(reason){
+      self.dispatch("error", {message: reason})
+    })
   },
   loadGames: function() {
     var self = this;
