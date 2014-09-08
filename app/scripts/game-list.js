@@ -41,6 +41,7 @@ module.exports = React.createClass({
           <tr>
             <th>Title</th>
             <th>Votes</th>
+            <th></th>
           </tr>
           <tbody>
           {

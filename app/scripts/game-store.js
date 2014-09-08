@@ -8,8 +8,18 @@ var GameStore = require('fluxxor').createStore({
     this.bindActions(
       "addGame", this.onAddGame,
       "loadGames", this.onLoadGames,
-      "loadGamesSuccess", this.onLoadGamesSuccess
+      "loadGamesSuccess", this.onLoadGamesSuccess,
+      "voteForGame", this.onVoteForGame
     );
+  },
+    
+  onVoteForGame: function(payload){
+    this.games.forEach(function(game){
+      if(game.id===payload.game.id){
+        game.votes++;
+      }
+    }) 
+    this.emit("change");
   },
 
   onAddGame: function(payload) {
@@ -38,6 +48,17 @@ var GameStore = require('fluxxor').createStore({
 });
 
 GameStore.actions = {
+  voteForGame: function(game){
+    this.dispatch("voteForGame", {game: game})
+    $.ajax({
+      dataType: "jsonp",
+      url: constants.url+"addVote",
+      data: {
+        apikey: constants.key,
+        id: game.id
+      }
+    });
+  },
   addGame: function(title) {
     var self = this;
     var game = {
