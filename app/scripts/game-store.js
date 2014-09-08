@@ -1,3 +1,6 @@
+var constants = require("./constants");
+var $ = require("jquery");
+
 var GameStore = require('fluxxor').createStore({
   initialize: function() {
     this.games = [];
@@ -10,7 +13,7 @@ var GameStore = require('fluxxor').createStore({
   },
 
   onAddGame: function(payload) {
-    this.games.push({title: payload.title, status: payload.status, votes: 0});
+    this.games.push(payload.game);
     this.emit("change");
   },
   
@@ -35,19 +38,42 @@ var GameStore = require('fluxxor').createStore({
 });
 
 GameStore.actions = {
-  addGame: function(title, status) {
-    this.dispatch("addGame", {title: title, status: status});
+  addGame: function(title) {
+    var self = this;
+    var game = {
+      title: title, 
+      status: "wantit",
+      saving: true,
+      votes: 1
+    };
+    $.ajax({
+      dataType: "jsonp",
+      url: constants.url+"addGame",
+      data: {
+        apikey: constants.key,
+        title: game.title
+      },
+      success: function(games){
+        // its ugly.. but just hard reload the list in order to get data back about
+        // the newly created resource
+        self.flux.actions.loadGames()
+      }
+    });
+    this.dispatch("addGame", {game: game});
   },
   loadGames: function() {
     var self = this;
     this.dispatch("loadGames")
-    setTimeout(function(){
-      var games = [
-          {title: "Lee Carvallo's Putting Challenge", status: "wantit", votes: 50},
-          {title: "Bonestorm", status: "gotit", votes: 50}
-      ];
-      self.dispatch("loadGamesSuccess", {games: games});
-    }, 800)
+    $.ajax({
+      dataType: "jsonp",
+      url: constants.url+"getGames",
+      data: {
+        apikey: constants.key
+      },
+      success: function(games){
+        self.dispatch("loadGamesSuccess", {games: games});
+      }
+    });
   }
 };
 

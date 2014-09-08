@@ -13,7 +13,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <tr>
-        <td>{this.props.game.title}</td>
+        <td>{this.props.game.title} {this.props.game.saving ? "(saving..)" : ""}</td>
         <td>{this.props.game.votes}</td>
       </tr>
     );
