@@ -25,7 +25,10 @@ Run gulp to start up the server:
 
     gulp
 
+Or to build the static version of the project:
+
+    export NODE_ENV=production;gulp dist
+
 ### TODO
 
 * Add error handling for when gulp chokes on invalid require statements
-* Fix whatever is wrong with the gulp dist task
