@@ -73,7 +73,7 @@ var GameStore = require('fluxxor').createStore({
 var checkAccess = function(){
   var deffered = $.Deferred();
 
-  var lastAction = localStorage["lastAction"] ? 
+  var lastAction = localStorage["lastAction"] ?
           new Date(parseInt(localStorage["lastAction"])) :
           undefined;
 
@@ -140,7 +140,7 @@ GameStore.actions = {
         saving: true,
         votes: 1
       };
-      this.dispatch("addGame", {game: game});
+      self.dispatch("addGame", {game: game});
       $.ajax({
         dataType: "jsonp",
         url: constants.url+"addGame",
