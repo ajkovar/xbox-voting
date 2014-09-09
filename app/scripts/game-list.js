@@ -38,10 +38,12 @@ module.exports = React.createClass({
 
   render: function() {
     var self = this;
-    var th;
-    if(this.state.status==="wantit"){
-        th = <th></th>
-    }
+    var th = this.state.status==="wantit" ? <th></th> : undefined;
+    var gameItems = this.state.games.filter(function(game){
+      return game.status===self.state.status
+    }).map(function(game, i) {
+      return <GameItem game={game} key={i} />;
+    });
     return this.state.loading ? 
       <span>Loading..</span> : 
       <div>
@@ -54,15 +56,7 @@ module.exports = React.createClass({
               {th}
             </tr>
           </thead>
-          <tbody>
-          {
-            this.state.games.filter(function(game){
-              return game.status===self.state.status
-            }).map(function(game, i) {
-              return <GameItem game={game} key={i} />;
-            })
-          }
-          </tbody>
+          <tbody>{gameItems}</tbody>
         </table>
         <form onSubmit={this.onSubmitForm}>
           <div className={"form-group"+(this.state.nameDuplicated ? " has-error" : "")}>
