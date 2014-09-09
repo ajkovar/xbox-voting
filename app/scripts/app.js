@@ -16,7 +16,6 @@ module.exports = React.createClass({
   },
 
   render: function() {
-
     return (
       <div className="container">
         <nav className="navbar navbar-default" role="navigation">

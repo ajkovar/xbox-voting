@@ -34,6 +34,10 @@ module.exports = React.createClass({
   componentWillReceiveProps: function(updatedProps){
     this.setState(getInitialState(updatedProps));
   },
+    
+  clearGames: function(){
+    this.getFlux().actions.clearGames();
+  },
 
   render: function() {
     var self = this;
@@ -59,6 +63,7 @@ module.exports = React.createClass({
           <tbody>{gameItems}</tbody>
         </table>
         {gameForm}
+        <input type="button" value="Clear Games" className="btn btn-primary" onClick={this.clearGames}/>
       </div>
   }
 

@@ -11,8 +11,14 @@ var GameStore = require('fluxxor').createStore({
       "loadGamesSuccess", this.onLoadGamesSuccess,
       "voteForGame", this.onVoteForGame,
       "error", this.onError,
-      "markAsOwned", this.onMarkAsOwned
+      "markAsOwned", this.onMarkAsOwned,
+      "clearGames", this.onClearGames
     );
+  },
+    
+  onClearGames: function(){
+    this.games = [];   
+    this.emit("change");
   },
     
   onMarkAsOwned: function(payload){
@@ -87,6 +93,14 @@ var checkAccess = function(){
 };
 
 GameStore.actions = {
+  clearGames: function(){
+    this.dispatch("clearGames")
+    $.ajax({
+      dataType: "jsonp",
+      url: constants.url+"clearGames",
+      data: {apikey: constants.key}
+    });
+  },
   markAsOwned: function(game){
     var self = this;
     self.dispatch("markAsOwned", {game: game})
