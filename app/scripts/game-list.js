@@ -43,6 +43,7 @@ module.exports = React.createClass({
     }).map(function(game, i) {
       return <GameItem game={game} key={i} />;
     });
+    var gameForm = this.state.status==="wantit" ? <GameForm /> : undefined;
     return this.state.loading ? 
       <span>Loading..</span> : 
       <div>
@@ -57,7 +58,7 @@ module.exports = React.createClass({
           </thead>
           <tbody>{gameItems}</tbody>
         </table>
-        <GameForm />
+        {gameForm}
       </div>
   }
 
