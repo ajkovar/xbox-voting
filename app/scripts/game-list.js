@@ -5,15 +5,14 @@
 var Fluxxor = require("fluxxor");
 var React = require("react");
 var GameItem = require("./game-item");
+var GameForm = require("./game-form");
 
 var FluxChildMixin = Fluxxor.FluxChildMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var getInitialState = function(props){
     return { 
-      newGameLabel: "",
-      status: props.status || "wantit",
-      nameDuplicated: false
+      status: props.status || "wantit"
     };
 }
 
@@ -24,12 +23,12 @@ module.exports = React.createClass({
     return getInitialState(this.props)
   },
 
-  getStateFromFlux: function() {
-    return this.getFlux().store("GameStore").getState();
-  },
-
   componentDidMount: function() {
     this.getFlux().actions.loadGames();
+  },
+
+  getStateFromFlux: function() {
+    return this.getFlux().store("GameStore").getState();
   },
   
   componentWillReceiveProps: function(updatedProps){
@@ -58,35 +57,8 @@ module.exports = React.createClass({
           </thead>
           <tbody>{gameItems}</tbody>
         </table>
-        <form onSubmit={this.onSubmitForm}>
-          <div className={"form-group"+(this.state.nameDuplicated ? " has-error" : "")}>
-            <input type="text" size="30" placeholder="New Game"
-                   value={this.state.newGameLabel}
-                   onChange={this.handleGameTextChange}
-                   className="form-control" />
-            { this.state.nameDuplicated ? 
-                <span className="text-danger">Duplicate Name</span> : 
-                "" }
-          </div>
-          <input type="submit" value="Add Game" className="btn btn-primary"/>
-        </form>
+        <GameForm />
       </div>
-  },
-
-  handleGameTextChange: function(e) {
-    this.setState({
-      newGameLabel: e.target.value,
-      nameDuplicated: this.state.games.some(function(game){
-        return (game.title || "").trim().toLowerCase()===e.target.value.trim().toLowerCase()
-      })
-    });
-  },
-
-  onSubmitForm: function(e) {
-    e.preventDefault();
-    if (this.state.newGameLabel.trim() && !this.state.nameDuplicated) {
-      this.getFlux().actions.addGame(this.state.newGameLabel, this.state.status);
-      this.setState({newGameLabel: ""});
-    }
   }
+
 });
