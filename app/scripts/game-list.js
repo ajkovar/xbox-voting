@@ -9,15 +9,19 @@ var GameItem = require("./game-item");
 var FluxChildMixin = Fluxxor.FluxChildMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var getInitialState = function(props){
+    return { 
+      newGameLabel: "",
+      status: props.status || "wantit",
+      nameDuplicated: false
+    };
+}
+
 module.exports = React.createClass({
   mixins: [FluxChildMixin, StoreWatchMixin("GameStore")],
 
   getInitialState: function() {
-    return { 
-      newGameLabel: "",
-      status: this.props.status || "wantit",
-      nameDuplicated: false
-    };
+    return getInitialState(this.props)
   },
 
   getStateFromFlux: function() {
@@ -28,22 +32,28 @@ module.exports = React.createClass({
     this.getFlux().actions.loadGames();
   },
   
-  componentWillReceiveProps: function(){
-    this.setState(this.getInitialState());
+  componentWillReceiveProps: function(updatedProps){
+    this.setState(getInitialState(updatedProps));
   },
 
   render: function() {
     var self = this;
+    var th;
+    if(this.state.status==="wantit"){
+        th = <th></th>
+    }
     return this.state.loading ? 
       <span>Loading..</span> : 
       <div>
         <table className="table table-bordered">
-          <tr>
-            <th>Title</th>
-            <th>Votes</th>
-            { this.state.status==="wantit" ? <th></th> : "" }
-            { this.state.status==="wantit" ? <th></th> : "" }
-          </tr>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Votes</th>
+              {th}
+              {th}
+            </tr>
+          </thead>
           <tbody>
           {
             this.state.games.filter(function(game){
