@@ -13,16 +13,16 @@ var flux = require('./flux.js');
 var ReactRouter = require("react-router");
 var Routes = ReactRouter.Routes;
 var Route = ReactRouter.Route;
-var DefaultRoute = ReactRouter.DefaultRoute;
+var Redirect = ReactRouter.Redirect;
 var GameList = require("./views/game-list")
 var $ = require("jquery");
 
 React.renderComponent((
   <Routes location="hash">
     <Route path="/" handler={App} flux={flux}>
-      <DefaultRoute handler={GameList} status="wantit" />
       <Route name="wanted" handler={GameList} status="wantit" />
       <Route name="owned" handler={GameList} status="gotit" />
+      <Redirect path="/" to="wanted" />
     </Route>
   </Routes>
 ), document.body);
