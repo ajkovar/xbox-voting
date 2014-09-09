@@ -5,7 +5,7 @@ Sample code demonstrating an game voting application.
 
 ### Key Technologies
 
-* [Gulp Browserify](https://www.npmjs.org/package/gulp-browserify) for project generation
+* [generator-browserify](https://www.npmjs.org/package/generator-browserify) for project generation
 * [React](http://facebook.github.io/react/)
 * [Fluxxor](http://fluxxor.com/)
 * [Bootstrap](http://getbootstrap.com/)
