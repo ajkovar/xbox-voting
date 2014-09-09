@@ -7,14 +7,15 @@
 
 'use strict';
 
-var App = require('./app.js');
+var App = require('./views/app.js');
 var React = require("react");
 var flux = require('./flux.js');
 var ReactRouter = require("react-router");
 var Routes = ReactRouter.Routes;
 var Route = ReactRouter.Route;
 var DefaultRoute = ReactRouter.DefaultRoute;
-var GameList = require("./game-list")
+var GameList = require("./views/game-list")
+var $ = require("jquery");
 
 React.renderComponent((
   <Routes location="hash">
@@ -25,3 +26,13 @@ React.renderComponent((
     </Route>
   </Routes>
 ), document.body);
+
+$.ajaxPrefilter(function( options ) {
+    var success = options.success;
+    options.success = function(result){
+      if(result==="false"){
+          alert("API KEY INVALID.. Do some error handing action here..")
+      }
+      success.apply(this, arguments)
+    }
+});
