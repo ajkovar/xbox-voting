@@ -6,6 +6,7 @@ var Fluxxor = require("fluxxor");
 var React = require("react");
 var GameItem = require("./game-item");
 var GameForm = require("./game-form");
+var translations = require("./translations");
 
 var FluxChildMixin = Fluxxor.FluxChildMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -51,6 +52,7 @@ module.exports = React.createClass({
     return this.state.loading ? 
       <span>Loading..</span> : 
       <div>
+        <h1>{translations[this.state.status]}</h1>
         <table className="table table-bordered">
           <thead>
             <tr>
